@@ -89,6 +89,14 @@ Currently, the supported platforms are:
 
 The library is designed to be easily extensible to other vendors.
 
+## Acknowledgements
+
+This project is heavily inspired by the fantastic Python library `netmiko`, created by Kirk Byers. The goal of `nodemiko` is to provide a similar, easy-to-use interface for network automation in the Node.js ecosystem.
+
+A huge thank you to Kirk for his pioneering work in this space.
+
+-   `netmiko` on GitHub: [https://github.com/ktbyers/netmiko](https://github.com/ktbyers/netmiko)
+
 ## Contributing
 
 Contributions are welcome! If you'd like to add a new device type or fix a bug, please open an issue or pull request.
