@@ -1,15 +1,15 @@
-# node-miko
+# nodemiko
 
 A Node.js library for simplifying SSH connections to network devices, inspired by Python's `netmiko`.
 
-## Why node-miko?
+## Why nodemiko?
 
-Network automation in Node.js often requires manually handling SSH streams, prompts, and configuration modes. `node-miko` aims to simplify this by providing a unified, promise-based API for sending commands and configuration changes to a variety of network vendors.
+Network automation in Node.js often requires manually handling SSH streams, prompts, and configuration modes. `nodemiko` aims to simplify this by providing a unified, promise-based API for sending commands and configuration changes to a variety of network vendors.
 
 ## Installation
 
 ```bash
-npm install node-miko
+npm install nodemiko
 ```
 
 ## Getting Started
@@ -17,10 +17,10 @@ npm install node-miko
 First, require the `ConnectHandler` from the library.
 
 ```js
-const { ConnectHandler } = require('node-miko');
+const { ConnectHandler } = require('nodemiko');
 ```
 
-Next, create a device object. The `device_type` is mandatory and tells `node-miko` which vendor driver to use.
+Next, create a device object. The `device_type` is mandatory and tells `nodemiko` which vendor driver to use.
 
 ```js
 const cisco_device = {
@@ -39,7 +39,7 @@ Now, you can connect to the device and start sending commands.
 This example shows how to connect to a Cisco IOS device, run a `show` command, send a couple of configuration lines, and then disconnect.
 
 ```js
-const { ConnectHandler } = require('node-miko');
+const { ConnectHandler } = require('nodemiko');
 
 // Replace with your device's details
 const device_options = {
