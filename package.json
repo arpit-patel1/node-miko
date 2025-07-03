@@ -1,6 +1,6 @@
 {
   "name": "nodemiko",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Node.js library for managing network devices, inspired by Netmiko.",
   "main": "src/connect_handler.js",
   "files": [
