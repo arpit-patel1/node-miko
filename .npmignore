@@ -1,0 +1,7 @@
+# Exclude development files and folders
+.DS_Store
+node_modules/
+tests/
+examples/
+npm-debug.log*
+.npmrc 

@@ -1,0 +1,36 @@
+{
+  "name": "nodemiko",
+  "version": "1.0.0",
+  "description": "A Node.js library for managing network devices, inspired by Netmiko.",
+  "main": "src/connect_handler.js",
+  "files": [
+    "src/"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arpit-patel1/nodemiko.git"
+  },
+  "keywords": [
+    "netmiko",
+    "network",
+    "automation",
+    "ssh",
+    "cisco",
+    "juniper"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arpit-patel1/nodemiko/issues"
+  },
+  "homepage": "https://github.com/arpit-patel1/nodemiko#readme",
+  "dependencies": {
+    "ssh2": "^1.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
