@@ -1,6 +1,8 @@
-const { withConnection } = require('../src/connect_handler');
+const { ConnectHandler } = require('../src/connect_handler');
+const { withConnection } = require('../src/utils/withConnection');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 // Replace with your device's details
 const device_options_password = {
@@ -8,7 +10,7 @@ const device_options_password = {
   host: 'sandbox-iosxr-1.cisco.com',
   username: 'admin',
   password: 'C1sco12345', // Can be removed if using keys
-  secret: 'enable_secret',
+  secret: 'C1sco12345',
   port: 22,
   conn_timeout: 20000,
   read_timeout: 10000,
@@ -39,24 +41,22 @@ const main = async () => {
     const int_brief = await conn.sendCommand('show ip int br');
     console.log(int_brief);
 
-    // Send a set of configuration commands
-    console.log('Sending configuration...');
-    const config_commands = [
-      'no ip domain-lookup',
-      'logging buffered 20000',
-    ];
-    const config_output = await conn.sendConfig(config_commands);
-    console.log(config_output);
+    console.log('Fetching version...');
+    const version = await conn.sendCommand('show version');
+    console.log(version);
+
+    console.log('\\nChecking available filesystems...');
+    const filesystems = await conn.sendCommand('show filesystem');
+    console.log(filesystems);
 
     // --- File Transfer Example ---
-    console.log('\nStarting file transfer example...');
+    console.log('\\nStarting file transfer example...');
     const local_file = 'test_file.txt';
-    // Note: The remote path might need to be adjusted based on the device's filesystem.
-    // For many Cisco devices, this will be 'flash:' or 'bootflash:'.
-    const remote_file = 'test_file.txt';
-
-    // 1. Create a dummy local file to upload
-    fs.writeFileSync(local_file, 'This is a test file for nodemiko.\n');
+    // NOTE: You must specify a writable filesystem on the remote device.
+    // Common filesystems include 'flash:', 'disk0:', 'harddisk:'.
+    // This will vary depending on the platform.
+    const remote_file = 'disk0:/nodemiko_test_file.txt';
+    fs.writeFileSync(local_file, 'This is a test file for nodemiko.');
     console.log(`Created dummy file: ${local_file}`);
 
     // 2. Upload the file (put)
@@ -68,19 +68,32 @@ const main = async () => {
     }
 
     // 3. Download the file (get)
-    const download_path = path.join(__dirname, 'downloaded_file.txt');
     try {
-      const get_result = await conn.fileTransfer(remote_file, download_path, 'get');
-      console.log(get_result);
-      console.log(`Downloaded file content: ${fs.readFileSync(download_path, 'utf-8')}`);
-    } catch (error) {
-      console.error(`File download failed: ${error.message}`);
+      const downloaded_local_file = 'downloaded_file.txt';
+      const download_result = await conn.fileTransfer(remote_file, downloaded_local_file, 'get');
+      console.log(download_result);
+    } catch (e) {
+      console.error(`File download failed: ${e.message}`);
     }
 
     // 4. Cleanup local files
     fs.unlinkSync(local_file);
-    fs.unlinkSync(download_path);
+    if (fs.existsSync('downloaded_file.txt')) {
+      fs.unlinkSync('downloaded_file.txt');
+    }
     console.log('Cleaned up local files.');
+
+    // Try to remove the file from the remote device
+    try {
+      await conn.sendCommand(`delete ${remote_file}`, {
+        expect_string: /Delete/i,
+      });
+      // Confirm deletion
+      await conn.sendCommand('\n');
+      console.log('Cleaned up remote file.');
+    } catch (e) {
+      console.log('Could not automatically clean up remote file. Please remove it manually.');
+    }
   };
 
   try {
