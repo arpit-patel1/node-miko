@@ -16,4 +16,16 @@ async function ConnectHandler(device) {
   return connection;
 }
 
-module.exports = { ConnectHandler };
+async function withConnection(device, task) {
+  let connection;
+  try {
+    connection = await ConnectHandler(device);
+    await task(connection);
+  } finally {
+    if (connection && connection.loggedIn) {
+      await connection.disconnect();
+    }
+  }
+}
+
+module.exports = { ConnectHandler, withConnection };
