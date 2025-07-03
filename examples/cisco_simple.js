@@ -1,8 +1,8 @@
-const { ConnectHandler } = require('../src/connect_handler');
-const { withConnection } = require('../src/utils/withConnection');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+import { ConnectHandler } from '../src/connect_handler.js';
+import { withConnection } from '../src/utils/withConnection.js';
+import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
 
 // Replace with your device's details
 const device_options_password = {

@@ -1,6 +1,6 @@
-const { ConnectHandler } = require('../src/connect_handler');
-const { withConnection } = require('../src/utils/withConnection');
-require('dotenv').config();
+import { ConnectHandler } from '../src/connect_handler.js';
+import { withConnection } from '../src/utils/withConnection.js';
+import 'dotenv/config';
 
 const device = {
   device_type: 'cisco_ios',

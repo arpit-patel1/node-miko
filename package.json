@@ -3,6 +3,7 @@
   "version": "1.1.2",
   "description": "A Node.js library for managing network devices, inspired by Netmiko.",
   "main": "src/connect_handler.js",
+  "type": "module",
   "files": [
     "src/"
   ],

@@ -1,10 +1,10 @@
-const { Client } = require('ssh2');
-const fs = require('fs');
+import { Client } from 'ssh2';
+import fs from 'fs';
 
 const DEFAULT_PROMPT = /([a-zA-Z0-9.\-@()_:\s]+[#>$%])\s*$/;
 const STRIP_ANSI = /[\u001b\u009b][[()#;?]*.{0,2}(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 
-class BaseConnection {
+export default class BaseConnection {
   constructor(device) {
     this.device = device;
     this.client = new Client();
@@ -382,5 +382,3 @@ class BaseConnection {
     });
   }
 }
-
-module.exports = BaseConnection;

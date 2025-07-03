@@ -1,6 +1,6 @@
-const BaseConnection = require('../base_connection');
+import BaseConnection from '../base_connection.js';
 
-class LinuxSSH extends BaseConnection {
+export default class LinuxSSH extends BaseConnection {
   constructor(device) {
     super(device);
     // Linux prompts can vary widely, but often end in '$' or '#'.
@@ -16,6 +16,4 @@ class LinuxSSH extends BaseConnection {
   async sendConfig() {
     throw new Error('Configuration mode is not supported for Linux devices. Use sendCommand() to execute commands.');
   }
-}
-
-module.exports = LinuxSSH; 
+} 

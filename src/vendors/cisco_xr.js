@@ -1,6 +1,6 @@
-const BaseConnection = require('../base_connection');
+import BaseConnection from '../base_connection.js';
 
-class CiscoXR extends BaseConnection {
+export default class CiscoXR extends BaseConnection {
   constructor(device) {
     super(device);
     // Example prompt: RP/0/RSP0/CPU0:XR-1#
@@ -44,6 +44,4 @@ class CiscoXR extends BaseConnection {
 
     return output;
   }
-}
-
-module.exports = CiscoXR; 
+} 

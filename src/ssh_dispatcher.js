@@ -1,8 +1,8 @@
-const CiscoIOS = require('./vendors/cisco_ios');
-const CiscoNXOS = require('./vendors/cisco_nxos');
-const CiscoXR = require('./vendors/cisco_xr');
-const JuniperJunos = require('./vendors/juniper_junos');
-const LinuxSSH = require('./vendors/linux_ssh');
+import CiscoIOS from './vendors/cisco_ios.js';
+import CiscoNXOS from './vendors/cisco_nxos.js';
+import CiscoXR from './vendors/cisco_xr.js';
+import JuniperJunos from './vendors/juniper_junos.js';
+import LinuxSSH from './vendors/linux_ssh.js';
 
 const CLASS_MAPPER = {
   'cisco_ios': CiscoIOS,
@@ -12,14 +12,10 @@ const CLASS_MAPPER = {
   'linux_ssh': LinuxSSH,
 };
 
-function ssh_dispatcher(device_type) {
+export function ssh_dispatcher(device_type) {
   const ConnectionClass = CLASS_MAPPER[device_type];
   if (!ConnectionClass) {
     throw new Error(`Unsupported device type: ${device_type}`);
   }
   return ConnectionClass;
 }
-
-module.exports = {
-  ssh_dispatcher,
-};

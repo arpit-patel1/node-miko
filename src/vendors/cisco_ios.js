@@ -1,7 +1,5 @@
-const BaseConnection = require('../base_connection');
+import BaseConnection from '../base_connection.js';
 
-class CiscoIos extends BaseConnection {
+export default class CiscoIOS extends BaseConnection {
   // Cisco IOS uses the default implementation from BaseConnection
-}
-
-module.exports = CiscoIos; 
+} 

@@ -1,6 +1,6 @@
-const { ssh_dispatcher } = require('./ssh_dispatcher');
+import { ssh_dispatcher } from './ssh_dispatcher.js';
 
-async function ConnectHandler(device) {
+export async function ConnectHandler(device) {
   const ConnectionClass = ssh_dispatcher(device.device_type);
   const connection = new ConnectionClass(device);
 
@@ -13,7 +13,3 @@ async function ConnectHandler(device) {
 
   return connection;
 }
-
-module.exports = {
-  ConnectHandler,
-};

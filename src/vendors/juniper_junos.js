@@ -1,6 +1,6 @@
-const BaseConnection = require('../base_connection');
+import BaseConnection from '../base_connection.js';
 
-class JuniperJunos extends BaseConnection {
+export default class JuniperJunos extends BaseConnection {
   constructor(device) {
     super(device);
     this.config_prompt = /\[edit\]\r\n[a-zA-Z0-9.\-@_]+#\s*$/;
@@ -60,6 +60,4 @@ class JuniperJunos extends BaseConnection {
 
     return output;
   }
-}
-
-module.exports = JuniperJunos; 
+} 

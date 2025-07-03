@@ -1,9 +1,7 @@
-const BaseConnection = require('../base_connection');
+import BaseConnection from '../base_connection.js';
 
-class CiscoNXOS extends BaseConnection {
+export default class CiscoNXOS extends BaseConnection {
   async configMode(config_command = 'configure terminal') {
     return super.configMode(config_command);
   }
-}
-
-module.exports = CiscoNXOS; 
+} 
