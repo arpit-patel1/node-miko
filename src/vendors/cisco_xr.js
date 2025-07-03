@@ -1,6 +1,6 @@
 const BaseConnection = require('../base_connection');
 
-class CiscoXr extends BaseConnection {
+class CiscoXR extends BaseConnection {
   constructor(device) {
     super(device);
     // Example prompt: RP/0/RSP0/CPU0:XR-1#
@@ -10,17 +10,14 @@ class CiscoXr extends BaseConnection {
     this.commit_error_pattern = /Failed to commit/i;
   }
 
-  async commit() {
+  async commit(commit_command = 'commit') {
     let output = '';
-    if (this.check_config_mode()) {
-      this.stream.write('commit\n');
+    if (this.checkConfigMode()) {
+      this.stream.write(`${commit_command}\n`);
       const commitOutput = await this.readUntilPrompt();
       output += commitOutput;
-
-      if (this.commit_error_pattern.test(commitOutput)) {
-        this.stream.write('abort\n');
-        output += await this.readUntilPrompt();
-        throw new Error(`Configuration commit failed: ${commitOutput}`);
+      if (/Failed to commit/.test(commitOutput)) {
+        throw new Error(`Commit failed: ${commitOutput}`);
       }
     }
     return output;
@@ -30,19 +27,23 @@ class CiscoXr extends BaseConnection {
     const configCmds = Array.isArray(commands) ? commands : [commands];
     let output = '';
 
-    output += await this.config_mode();
+    output += await this.configMode();
 
-    for (const cmd of configCmds) {
-      this.stream.write(`${cmd}\n`);
-      output += await this.readUntilPrompt();
-      this._checkError(cmd, output);
+    for (const command of configCmds) {
+      this.stream.write(`${command}\n`);
+      const cmdOutput = await this.readUntilPrompt(this.config_prompt);
+      this._checkError(command, cmdOutput);
+      output += cmdOutput;
     }
 
+    // Commit the changes
     output += await this.commit();
-    output += await this.exit_config_mode();
+
+    // Exit config mode
+    output += await this.exitConfigMode();
 
     return output;
   }
 }
 
-module.exports = CiscoXr; 
+module.exports = CiscoXR; 

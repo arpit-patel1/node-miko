@@ -20,6 +20,18 @@ class BaseConnection {
     this.global_delay_factor = device.global_delay_factor || 1;
 
     this.config_error_pattern = /(?:Invalid|Incomplete|Ambiguous) command/i;
+
+    // Aliases for netmiko compatibility
+    this.send_command = this.sendCommand;
+    this.send_command_timing = this.sendCommandTiming;
+    this.send_config = this.sendConfig;
+    this.find_prompt = this.findPrompt;
+    this.check_enable_mode = this.checkEnableMode;
+    this.config_mode = this.configMode;
+    this.check_config_mode = this.checkConfigMode;
+    this.exit_config_mode = this.exitConfigMode;
+    this.session_preparation = this.sessionPreparation;
+    this.file_transfer = this.fileTransfer;
   }
 
   _delay(ms) {
@@ -43,9 +55,9 @@ class BaseConnection {
           if (err) return reject(err);
           this.stream = stream;
           this.loggedIn = true;
-          this.session_preparation()
+          this.sessionPreparation()
             .then(() => {
-              this.find_prompt()
+              this.findPrompt()
                 .then(() => resolve(this))
                 .catch(reject);
             })
@@ -133,7 +145,7 @@ class BaseConnection {
     });
   }
 
-  async find_prompt() {
+  async findPrompt() {
     return new Promise((resolve, reject) => {
       if (!this.stream) {
         return reject(new Error('Connection not established'));
@@ -163,13 +175,13 @@ class BaseConnection {
     });
   }
 
-  async session_preparation() {
+  async sessionPreparation() {
     // This method is intended to be overridden by subclasses for initial setup
     // like disabling paging. The base implementation does nothing.
     return Promise.resolve();
   }
 
-  check_enable_mode() {
+  checkEnableMode() {
     // Privileged EXEC mode on most devices includes a '#'
     return this.base_prompt.includes('#');
   }
@@ -244,7 +256,7 @@ class BaseConnection {
   }
 
   async enable() {
-    if (this.check_enable_mode()) {
+    if (this.checkEnableMode()) {
       return '';
     }
     if (!this.device.secret) {
@@ -259,11 +271,11 @@ class BaseConnection {
           this.stream.write(`${this.device.secret}\n`, async (writeErr) => {
             if (writeErr) return reject(writeErr);
             
-            await this.find_prompt();
+            await this.findPrompt();
             const remainingOutput = await this.readUntilPrompt();
             output += remainingOutput;
 
-            if (this.check_enable_mode()) {
+            if (this.checkEnableMode()) {
               resolve(output);
             } else {
                 reject(new Error('Failed to enter enable mode. Please check the secret.'));
@@ -276,30 +288,30 @@ class BaseConnection {
     });
   }
 
-  check_config_mode() {
+  checkConfigMode() {
     return this.config_prompt.test(this.base_prompt);
   }
 
-  async config_mode(config_command = 'configure terminal') {
+  async configMode(config_command = 'configure terminal') {
     let output = '';
-    if (!this.check_config_mode()) {
+    if (!this.checkConfigMode()) {
       this.stream.write(`${config_command}\n`);
       output = await this.readUntilPrompt(this.config_prompt);
       this._checkError(config_command, output);
-      if (!this.check_config_mode()) {
+      if (!this.checkConfigMode()) {
         throw new Error('Failed to enter configuration mode.');
       }
     }
     return output;
   }
 
-  async exit_config_mode(exit_command = 'end') {
+  async exitConfigMode(exit_command = 'end') {
     let output = '';
-    if (this.check_config_mode()) {
+    if (this.checkConfigMode()) {
       this.stream.write(`${exit_command}\n`);
       output = await this.readUntilPrompt(this.prompt);
       this._checkError(exit_command, output);
-      if (this.check_config_mode()) {
+      if (this.checkConfigMode()) {
         throw new Error('Failed to exit configuration mode.');
       }
     }
@@ -315,7 +327,7 @@ class BaseConnection {
     const configCmds = Array.isArray(commands) ? commands : [commands];
     let output = '';
 
-    output += await this.config_mode();
+    output += await this.configMode();
 
     for (const command of configCmds) {
       this.stream.write(`${command}\n`);
@@ -327,7 +339,7 @@ class BaseConnection {
     // Commit if needed (for transactional devices)
     output += await this.commit();
 
-    output += await this.exit_config_mode();
+    output += await this.exitConfigMode();
     return output;
   }
 

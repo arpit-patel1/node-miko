@@ -1,7 +1,9 @@
 const BaseConnection = require('../base_connection');
 
-class CiscoNxos extends BaseConnection {
-  // Cisco NX-OS uses the default implementation from BaseConnection
+class CiscoNXOS extends BaseConnection {
+  async configMode(config_command = 'configure terminal') {
+    return super.configMode(config_command);
+  }
 }
 
-module.exports = CiscoNxos; 
+module.exports = CiscoNXOS; 

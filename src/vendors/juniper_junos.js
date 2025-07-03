@@ -7,27 +7,29 @@ class JuniperJunos extends BaseConnection {
     this.commit_error_pattern = /error:/i;
   }
 
-  async session_preparation() {
-    this.stream.write('set cli screen-length 0\n');
-    await this.readUntilPrompt();
+  async sessionPreparation() {
+    await this.sendCommand('set cli screen-length 0');
+    await this.sendCommand('set cli screen-width 511');
+    return '';
   }
 
   async enable() {
-    return ''; // Junos doesn't have an enable mode
+    // Junos doesn't have a separate enable mode, so we do nothing.
+    return '';
   }
 
-  async config_mode(config_command = 'configure') {
-    return super.config_mode(config_command);
+  async configMode(config_command = 'configure') {
+    return super.configMode(config_command);
   }
 
-  async exit_config_mode(exit_command = 'exit') {
-    return super.exit_config_mode(exit_command);
+  async exitConfigMode(exit_command = 'exit configuration-mode') {
+    return super.exitConfigMode(exit_command);
   }
 
-  async commit() {
+  async commit(commit_command = 'commit') {
     let output = '';
     if (this.check_config_mode()) {
-      this.stream.write('commit\n');
+      this.stream.write(commit_command + '\n');
       const commitOutput = await this.readUntilPrompt();
       output += commitOutput;
 
@@ -44,7 +46,7 @@ class JuniperJunos extends BaseConnection {
     const configCmds = Array.isArray(commands) ? commands : [commands];
     let output = '';
 
-    output += await this.config_mode();
+    output += await this.configMode();
 
     for (const cmd of configCmds) {
       this.stream.write(`${cmd}\n`);
@@ -54,7 +56,7 @@ class JuniperJunos extends BaseConnection {
     }
 
     output += await this.commit();
-    output += await this.exit_config_mode();
+    output += await this.exitConfigMode();
 
     return output;
   }

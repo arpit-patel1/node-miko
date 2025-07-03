@@ -5,9 +5,9 @@ const path = require('path');
 // Replace with your device's details
 const device_options_password = {
   device_type: 'cisco_ios',
-  host: '10.0.0.1',
+  host: 'sandbox-iosxr-1.cisco.com',
   username: 'admin',
-  password: 'password', // Can be removed if using keys
+  password: 'C1sco12345', // Can be removed if using keys
   secret: 'enable_secret',
   port: 22,
   conn_timeout: 20000,
